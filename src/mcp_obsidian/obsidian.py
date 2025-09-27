@@ -4,11 +4,11 @@ from typing import Any
 
 class Obsidian():
     def __init__(
-            self, 
+            self,
             api_key: str,
-            protocol: str = 'http',
-            host: str = "127.0.0.1",
-            port: int = 27123,
+            protocol: str = os.environ["OBSIDIAN_PROTOCOL"],
+            host: str = os.environ["OBSIDIAN_HOST"],
+            port: int = int(os.environ["OBSIDIAN_PORT"]),
             verify_ssl: bool = False,
         ):
         self.api_key = api_key
