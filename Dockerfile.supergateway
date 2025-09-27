@@ -1,0 +1,21 @@
+FROM python:3.12-alpine
+
+RUN apk update && apk add --no-cache nodejs npm git socat
+
+COPY ./ /mcp-obsidian
+WORKDIR /mcp-obsidian
+
+# Устанавливаем Python зависимости
+RUN pip install --no-cache-dir -r requirements.txt
+
+RUN npm install -g supergateway
+
+EXPOSE 8001
+
+ENV OBS_PROTOCOL=http
+ENV OBS_HOST=host.docker.internal
+ENV OBS_PORT=27124
+
+CMD sh -c "socat TCP4-LISTEN:27124,fork TCP4:host.docker.internal:27124 & \
+           supergateway --stdio 'python -m src.mcp_obsidian' --port 8001 --ssePath /sse \
+           --messagePath /message --cors --logLevel info --defaultHttp"
