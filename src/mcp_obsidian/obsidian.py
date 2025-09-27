@@ -1,23 +1,24 @@
 import requests
 import os
 import urllib.parse
-from typing import Any
+from typing import Any, Optional
 
 class Obsidian():
     def __init__(
             self,
             api_key: str,
-            protocol: str = os.environ["OBSIDIAN_PROTOCOL"],
-            host: str = os.environ["OBSIDIAN_HOST"],
-            port: int = int(os.environ["OBSIDIAN_PORT"]),
+            protocol: Optional[str] = None,
+            host: Optional[str] = None,
+            port: Optional[int] = None,
             verify_ssl: bool = False,
         ):
-        self.api_key = api_key
-        self.protocol = protocol
-        self.host = host
-        self.port = port
-        self.verify_ssl = verify_ssl
-        self.timeout = (3, 6)
+            # Берём значения из аргументов или из окружения
+            self.api_key = api_key
+            self.protocol = protocol or os.environ.get("OBSIDIAN_PROTOCOL")
+            self.host = host or os.environ.get("OBSIDIAN_HOST")
+            self.port = port or (int(os.environ.get("OBSIDIAN_PORT")) if os.environ.get("OBSIDIAN_PORT") else None)
+            self.verify_ssl = verify_ssl
+            self.timeout = (3, 6)
 
     def get_base_url(self) -> str:
         return f'{self.protocol}://{self.host}:{self.port}'
